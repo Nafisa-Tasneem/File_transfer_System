@@ -2,7 +2,7 @@ import socket
 import os
 
 class Filetransfer:
-    def __init__(self,host = socket.gethostbyname(socket.gethostname()),port = 5000, soc = socket.socket(), server = True):
+    def __init__(self,host = socket.gethostbyname(socket.gethostname()),port = 5000, sok = socket.socket(), server = True):
         self.host = host
         self.port = port
         self.sok = sok
@@ -16,7 +16,7 @@ class Filetransfer:
     def server(self):
         ''' server program portion '''
         print("Server is on | Host ",self.host,' | Port ',self.port) #printing the server host ip and port number
-        self.sok.bind(self.host, self.port)
+        self.sok.bind((self.host,self.port))
         self.sok.listen(10)
 
         option = ['help', 'file', 'download', 'dl'] #defining options
@@ -27,13 +27,17 @@ class Filetransfer:
             ''' Communication '''
             r = conn.recv(1024).decode() #rx, receiving port number is 1024
             print('Client :', r)
-            print("Please write 'help' to see the options.")
+            # print("Please write 'help' to see the options.")
             if r in option:
                 if r == 'help':
                     msg = str(option).encode()
+                    # disp = "Type 'file' to display the available files, 'dl' or 'Download' to download a file"
+                    # msg2 = disp.encode()
+
                     conn.send(msg)
+                    # conn.send(msg2)
                 elif r == 'file':
-                    top = str(os.getcwd()) + '\\store' #stores current working directory path
+                    top = str(os.getcwd()) + '\\store' # current working directory path
                     file_name = ''
                     for root, dirs, files in os.walk(top):
                         file_name = str(files).encode()
@@ -70,8 +74,10 @@ class Filetransfer:
 
     def client(self):
         ''' Client program'''
-        self.sok.connect(self.host,self.port)
+        self.sok.connect((self.host,self.port))
         print("Client mode on. Client connected.")
+        print("Please type 'help' to see available options.")
+        print("Type 'file' to display the available files, 'dl' or 'Download' to download a file.")
         while True:
             msg = input(str('Client :')).encode()
             self.sok.send(msg) #tx
@@ -79,7 +85,7 @@ class Filetransfer:
 
             if r == 'dl_ack':
                 ''' Download operation'''
-                print('Server : File name?')
+                print('Server : Please type the file name to download.')
                 msg_file = input(str('Client : ')).encode() #taking file name as input
                 self.sok.send(msg_file) # tx file name
                 r = self.sok.recv(1024).decode() # rx 'OK'
@@ -94,7 +100,7 @@ class Filetransfer:
                     file_data = self.sok.recv(r_size + 100)  # rx file
                     file.write(file_data)
                     file.close()
-                    print('Server: SENT!')
+                    print('Server: File has been sent!')
                 else:
                     pass
             else:
