@@ -26,17 +26,14 @@ class Filetransfer:
 
         while True:
             ''' Communication '''
-            r = conn.recv(1024).decode() #rx, receiving port number is 1024
+            r = conn.recv(1024).decode() #rx, receiving buffer size is 1024
             print('Client :', r)
-            # print("Please write 'help' to see the options.")
+
             if r in option:
                 if r == 'help':
                     msg = str(option).encode()
-                    # disp = "Type 'file' to display the available files, 'dl' or 'Download' to download a file"
-                    # msg2 = disp.encode()
-
                     conn.send(msg)
-                    # conn.send(msg2)
+
                 elif r == 'file':
                     top = str(os.getcwd()) + '\\store' # current working directory path
                     file_name = ''
