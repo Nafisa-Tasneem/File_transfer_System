@@ -20,7 +20,7 @@ class Filetransfer:
         self.sok.listen(10)
         print("Server listening...")
 
-        option = ['help', 'file', 'download', 'dl', 'close'] #defining options
+        option = ['help', 'file', 'download', 'dl'] #defining options
         conn,addr = self.sok.accept()
         print('Connected to client',addr)
 
@@ -54,7 +54,7 @@ class Filetransfer:
                         r = conn.recv(1024).decode() #rx 'OK'
                         size = os.path.getsize(path_variable)
                         msg = str(size).encode()
-                        conn.send(msg) # tx
+                        conn.send(msg) # tx size of the file
                         r = conn.recv(1024).decode() # rx 'OK'
                         #file sending .....
                         file = open(path_variable, 'rb')
@@ -77,10 +77,10 @@ class Filetransfer:
         self.sok.connect((self.host,self.port))
         print("Client mode on. Client connected.")
         print("Please type 'help' to see available options.")
-        print("Type 'file' to display the available files, 'dl' or 'Download' to download a file.")
+        print("Type 'file' to display the available files, 'dl' or 'download' to download a file.")
         while True:
-            msg = input(str('Client :')).encode()
-            self.sok.send(msg) #tx
+            msg = input(str('Client : ')).encode()
+            self.sok.send(msg) #tx option to server
             r = self.sok.recv(1024).decode() #rx
 
             if r == 'dl_ack':
@@ -97,14 +97,14 @@ class Filetransfer:
                     # file receive
                     path_var = str(os.getcwd()) + '\\download' + '\\' + msg_file.decode()
                     file = open(path_var, 'wb')
-                    file_data = self.sok.recv(r_size + 100)  # rx file
+                    file_data = self.sok.recv(r_size + 100)  # rx file , buffer size r_size+100
                     file.write(file_data)
                     file.close()
-                    print('Server: File has been sent!')
+                    print('Server : File has been sent!')
                 else:
                     pass
             else:
-                print('Server: ',r)
+                print('Server : ',r)
 
 
 
