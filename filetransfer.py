@@ -18,6 +18,7 @@ class Filetransfer:
         print("Server is on | Host ",self.host,' | Port ',self.port) #printing the server host ip and port number
         self.sok.bind((self.host,self.port))
         self.sok.listen(10)
+        print("Server listening...")
 
         option = ['help', 'file', 'download', 'dl'] #defining options
         conn,addr = self.sok.accept()
