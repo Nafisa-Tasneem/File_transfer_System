@@ -20,7 +20,7 @@ class Filetransfer:
         self.sok.listen(10)
         print("Server listening...")
 
-        option = ['help', 'file', 'download', 'dl'] #defining options
+        option = ['help', 'file', 'download', 'dl', 'close'] #defining options
         conn,addr = self.sok.accept()
         print('Connected to client',addr)
 
@@ -64,6 +64,8 @@ class Filetransfer:
                     else:
                         msg = "File does not exist.".encode()
                         conn.send(msg) #tx error msg
+                elif r == 'close':
+                    conn.close()
                 else:
                     print("Service currently unavailabe.")
 
